@@ -6,7 +6,8 @@ using Talabat.Core.Repositories.Contract;
 
 namespace Talabat.API.Controllers
 {
-    //[Route("api/[controller]")]
+    //[Route("api/[controller]")] 
+
     //[ApiController]
     public class ProductController : BaseApiController
     {
