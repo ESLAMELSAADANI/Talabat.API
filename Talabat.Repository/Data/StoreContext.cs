@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Talabat.Core.Entities;
-using Talabat.Repository.Data.Config;
+using Talabat.Infrastructure.Data.Config;
 
-namespace Talabat.Repository.Data
+namespace Talabat.Infrastructure.Data
 {
     public class StoreContext : DbContext
     {

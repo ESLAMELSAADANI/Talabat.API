@@ -3,8 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using Talabat.Core.Entities;
 using Talabat.Core.Repositories.Contract;
-using Talabat.Repository;
-using Talabat.Repository.Data;
+using Talabat.Infrastructure;
+using Talabat.Infrastructure.Data;
 
 namespace Talabat.API
 {
