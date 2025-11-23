@@ -7,7 +7,8 @@ using Talabat.Core.Specifications;
 
 namespace Talabat.API.Controllers
 {
-    //[Route("api/[controller]")]
+    //[Route("api/[controller]")] 
+
     //[ApiController]
     public class ProductController : BaseApiController
     {
