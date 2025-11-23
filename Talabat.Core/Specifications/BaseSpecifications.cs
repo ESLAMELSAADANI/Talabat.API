@@ -15,9 +15,12 @@ namespace Talabat.Core.Specifications
 
         public BaseSpecifications()
         {
+            //Crieteria is null here by default 
+            //and includes is an empty list
+            //when we create an instance of this class
         }
 
-        public BaseSpecifications(Expression<Func<T,bool>> criteria)
+        public BaseSpecifications(Expression<Func<T, bool>> criteria)
         {
             Criteria = criteria;
         }
