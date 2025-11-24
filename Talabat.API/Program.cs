@@ -9,6 +9,7 @@ using Talabat.API.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Talabat.API.Errors;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Talabat.API.Middlewares;
 
 namespace Talabat.API
 {
@@ -85,6 +86,8 @@ namespace Talabat.API
 
 
             // Configure the HTTP request pipeline.
+
+            app.UseMiddleware<ExceptionMiddleware>();
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
