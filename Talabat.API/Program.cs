@@ -6,6 +6,9 @@ using Talabat.Infrastructure;
 using Talabat.Infrastructure.Data;
 using AutoMapper;
 using Talabat.API.Helpers;
+using Microsoft.AspNetCore.Mvc;
+using Talabat.API.Errors;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Talabat.API
 {
@@ -35,9 +38,25 @@ namespace Talabat.API
             });
 
             builder.Services.AddAutoMapper(M => M.AddProfile(typeof(MappingProfiles)));
-            
+
             builder.Services.AddTransient<ProductPictureUrlResolver>();
-            
+
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                    options.InvalidModelStateResponseFactory = (actionResult) =>
+                    {
+                        var errors = actionResult.ModelState.Where(parameter => parameter.Value.Errors.Count() > 0)
+                                                            .SelectMany(parameter => parameter.Value.Errors)
+                                                            .Select(error => error.ErrorMessage)
+                                                            .ToList();
+                        var response = new ApiValidationErrorResponse()
+                        {
+                            Errors = errors
+                        };
+                        return new BadRequestObjectResult(response);
+                    };
+            });
+
             var app = builder.Build();
 
             app.UseSwaggerUI(options => { options.SwaggerEndpoint("/openapi/v1.json", "v1"); });
@@ -73,6 +92,8 @@ namespace Talabat.API
             }
 
             app.UseHttpsRedirection();
+
+            app.UseStaticFiles();
 
             app.UseAuthorization();
 

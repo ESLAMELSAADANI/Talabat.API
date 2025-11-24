@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Talabat.API.DTOs;
+using Talabat.API.Errors;
 using Talabat.Core.Entities;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Core.Specifications;
@@ -44,7 +45,7 @@ namespace Talabat.API.Controllers
             var product = await _productRepo.GetWithSpecAsync(spec);
 
             if (product == null)
-                return NotFound(new { Message = "Not Found!", Code = 404 });//404
+                return NotFound(new ApiResponse(404, "Not Found!"));//404
 
             var productDTO = _mapper.Map<ProductToReturnDTO>(product);
             return Ok(productDTO);//200
