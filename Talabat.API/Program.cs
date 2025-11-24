@@ -1,10 +1,11 @@
-
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using Talabat.Core.Entities;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Infrastructure;
 using Talabat.Infrastructure.Data;
+using AutoMapper;
+using Talabat.API.Helpers;
 
 namespace Talabat.API
 {
@@ -33,6 +34,10 @@ namespace Talabat.API
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            builder.Services.AddAutoMapper(M => M.AddProfile(typeof(MappingProfiles)));
+            
+            builder.Services.AddTransient<ProductPictureUrlResolver>();
+            
             var app = builder.Build();
 
             app.UseSwaggerUI(options => { options.SwaggerEndpoint("/openapi/v1.json", "v1"); });
@@ -64,6 +69,7 @@ namespace Talabat.API
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.UseSwaggerUI(options => { options.SwaggerEndpoint("/openapi/v1.json", "v1"); });
             }
 
             app.UseHttpsRedirection();
