@@ -21,7 +21,7 @@ namespace Talabat.Infrastructure
             this._dbContext = _dbContext;
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IReadOnlyList<T>> GetAllAsync()
         {
             //if (typeof(T) == typeof(Product))
             //    return (IEnumerable<T>)await _dbContext.Set<Product>().Include(p => p.Brand).Include(p => p.Category).ToListAsync();//Eager loading - inner join between Product&ProductBrand | Product&ProductCategory 
@@ -38,7 +38,7 @@ namespace Talabat.Infrastructure
 
 
         //Using Specification Design Pattern
-        public async Task<IEnumerable<T>> GetAllWithSpecAsync(ISpecification<T> spec)
+        public async Task<IReadOnlyList<T>> GetAllWithSpecAsync(ISpecification<T> spec)
         {
             return await ApplySpecifications(spec).AsNoTracking().ToListAsync();
         }
