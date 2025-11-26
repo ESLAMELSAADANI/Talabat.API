@@ -11,6 +11,7 @@ using Talabat.API.Errors;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Talabat.API.Middlewares;
 using System.Net;
+using Talabat.API.Extensions;
 
 namespace Talabat.API
 {
@@ -20,6 +21,8 @@ namespace Talabat.API
         {
 
             var builder = WebApplication.CreateBuilder(args);
+
+            #region Add Services To DIC - Dependency Injection Container
 
             // Add services to the container.
 
@@ -31,35 +34,16 @@ namespace Talabat.API
             //builder.Services.AddScoped<IGenericRepository<ProductBrand>, GenericRepository<ProductBrand>>();
             //builder.Services.AddScoped<IGenericRepository<ProductCategory>, GenericRepository<ProductCategory>>();
 
-            //======== Instead of previous lines =======
-            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-
             builder.Services.AddDbContext<StoreContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            builder.Services.AddAutoMapper(M => M.AddProfile(typeof(MappingProfiles)));
+            //======== Instead of previous lines =======
+            //ApplicationServicesExtension.AddApplicationServices(builder.Services);
+            builder.Services.AddApplicationServices();//Call it as extension method for the contaier builder.services which is of type IServiceCollection
 
-            builder.Services.AddTransient<ProductPictureUrlResolver>();
-
-            builder.Services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.InvalidModelStateResponseFactory = (actionResult) =>
-                {
-                    var errors = actionResult.ModelState.Where(parameter => parameter.Value.Errors.Count() > 0)
-                                                        .SelectMany(parameter => parameter.Value.Errors)
-                                                        .Select(error => error.ErrorMessage)
-                                                        .ToList();
-                    var response = new ApiValidationErrorResponse()
-                    {
-                        Errors = errors
-                    };
-                    return new BadRequestObjectResult(response);
-                };
-            });
-
-            builder.Services.AddTransient<ExceptionMiddleware>();
+            #endregion
 
             var app = builder.Build();
 
@@ -88,6 +72,8 @@ namespace Talabat.API
                 logger.LogError(ex, "An error has been occurred when apply the migration");
             }
 
+
+            #region Configure Middlewares
 
             // Configure the HTTP request pipeline.
 
@@ -119,8 +105,9 @@ namespace Talabat.API
 
             if (app.Environment.IsDevelopment())
             {
-                app.MapOpenApi();
-                app.UseSwaggerUI(options => { options.SwaggerEndpoint("/openapi/v1.json", "v1"); });
+                //app.MapOpenApi();
+                //app.UseSwaggerUI(options => { options.SwaggerEndpoint("/openapi/v1.json", "v1"); });
+                app.UseSwaggerMiddlewares();//Extension Method.
             }
 
             //app.UseStatusCodePagesWithRedirects("/Errors/{0}");//Work When Send Request With Invalid URL - To Redirect this request to specific route/URL/endpoint
@@ -141,6 +128,9 @@ namespace Talabat.API
 
 
             app.Run();
+
+            #endregion
+
         }
     }
 }
