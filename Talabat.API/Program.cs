@@ -59,6 +59,8 @@ namespace Talabat.API
                 };
             });
 
+            builder.Services.AddTransient<ExceptionMiddleware>();
+
             var app = builder.Build();
 
             app.UseSwaggerUI(options => { options.SwaggerEndpoint("/openapi/v1.json", "v1"); });
@@ -114,13 +116,20 @@ namespace Talabat.API
             ///
             ///    }
             ///});
-            
+
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
                 app.UseSwaggerUI(options => { options.SwaggerEndpoint("/openapi/v1.json", "v1"); });
             }
 
+            //app.UseStatusCodePagesWithRedirects("/Errors/{0}");//Work When Send Request With Invalid URL - To Redirect this request to specific route/URL/endpoint
+            app.UseStatusCodePagesWithReExecute("/Errors/{0}");//I use this, bcz the previous method make redirection when type invalid URL, and redirect me on another URL, but i use response return to me without redirection , in the same URL.
+            //This Parameter To Check The Type of error that trigger this middleware
+            //if (Unauthorize URL) Or (Invalid URl)
+            //If not provide URL => All responses will ne NotFound()
+            //And this is not logic bcz if unauthorize URL need to return UnAuthorized() not NotFound()
+            //In Contrloller i willbind this parameter to the status code of the error.
             app.UseHttpsRedirection();
 
             app.UseStaticFiles();
