@@ -37,6 +37,8 @@ namespace Talabat.API.Controllers
             return Ok(productsDTO);
         }
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(ProductToReturnDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ProductToReturnDTO>> GetProduct(int id)
         {
             //var product = await _productRepo.GetAsync(id);
