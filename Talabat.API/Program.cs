@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Talabat.API.Errors;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Talabat.API.Middlewares;
+using System.Net;
 
 namespace Talabat.API
 {
@@ -44,18 +45,18 @@ namespace Talabat.API
 
             builder.Services.Configure<ApiBehaviorOptions>(options =>
             {
-                    options.InvalidModelStateResponseFactory = (actionResult) =>
+                options.InvalidModelStateResponseFactory = (actionResult) =>
+                {
+                    var errors = actionResult.ModelState.Where(parameter => parameter.Value.Errors.Count() > 0)
+                                                        .SelectMany(parameter => parameter.Value.Errors)
+                                                        .Select(error => error.ErrorMessage)
+                                                        .ToList();
+                    var response = new ApiValidationErrorResponse()
                     {
-                        var errors = actionResult.ModelState.Where(parameter => parameter.Value.Errors.Count() > 0)
-                                                            .SelectMany(parameter => parameter.Value.Errors)
-                                                            .Select(error => error.ErrorMessage)
-                                                            .ToList();
-                        var response = new ApiValidationErrorResponse()
-                        {
-                            Errors = errors
-                        };
-                        return new BadRequestObjectResult(response);
+                        Errors = errors
                     };
+                    return new BadRequestObjectResult(response);
+                };
             });
 
             var app = builder.Build();
@@ -71,6 +72,8 @@ namespace Talabat.API
 
 
             var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+
+            var logger = loggerFactory.CreateLogger<Program>();
             try
             {
                 await _dbContext.Database.MigrateAsync();//Update-Database
@@ -80,7 +83,6 @@ namespace Talabat.API
             catch (Exception ex)
             {
                 //Console.WriteLine(ex);//Kestrel screen
-                var logger = loggerFactory.CreateLogger<Program>();
                 logger.LogError(ex, "An error has been occurred when apply the migration");
             }
 
@@ -88,6 +90,31 @@ namespace Talabat.API
             // Configure the HTTP request pipeline.
 
             app.UseMiddleware<ExceptionMiddleware>();
+
+            ///Make Middleware By Request Delegate approach in program.cs instead of make middleware class.
+            ///app.Use(async (httpContext, _next) =>
+            ///{
+            ///    try
+            ///    {
+            ///        await _next.Invoke(httpContext);
+            ///    }
+            ///    catch (Exception ex)
+            ///    {
+            ///
+            ///        logger.LogError(ex.Message);
+            ///
+            ///        httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            ///        httpContext.Response.ContentType = "application/json";
+            ///
+            ///        var response = app.Environment
+            ///                          .IsDevelopment() ?
+            ///                          new ApiExceptionResponse((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace.ToString()) :
+            ///                          new ApiExceptionResponse((int)HttpStatusCode.InternalServerError);
+            ///        await httpContext.Response.WriteAsJsonAsync(response);
+            ///
+            ///    }
+            ///});
+            
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
