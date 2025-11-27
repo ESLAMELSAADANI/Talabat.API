@@ -12,11 +12,13 @@ namespace Talabat.Core.Specifications.Product_Specs
     {
         //When Query Of Get All Products => There are only includes() specs not other like where() 
         //This constructor will be used for creating an object, that will be get all products - query of get all products.
-        public ProductWithBrandAndCategorySpecifications(string? sort) : base()
+        public ProductWithBrandAndCategorySpecifications(string? sort, int? brandId, int? categoryId) : base(p => (!brandId.HasValue || p.BrandId == brandId.Value) && (!categoryId.HasValue || p.CategoryId == categoryId.Value))
         {
+            //AddFilters(brandId, categoryId);
             AddSort(sort);
             AddIncludes();
         }
+
 
         //When Query Of Get Product By ID => There are where() spec and includes() specs
         //This constructor will be used for creating an object, that will be used to get a specific product with id - query of get product by id.
@@ -53,6 +55,15 @@ namespace Talabat.Core.Specifications.Product_Specs
             else
                 SetOrderBy(p => p.Name);//if sort = null - consumer not pass value for sort parameter when consume getAll() endpoint.
         }
+        //private void AddFilters(int? brandId, int? categoryId)
+        //{
+        //    if (brandId != null && categoryId != null)
+        //        Criteria = p => p.BrandId == brandId && p.CategoryId == categoryId;
+        //    else if (brandId != null && categoryId == null)
+        //        Criteria = p => p.BrandId == brandId;
+        //    else if (brandId == null && categoryId != null)
+        //        Criteria = p => p.CategoryId == categoryId;
+        //}
 
     }
 }

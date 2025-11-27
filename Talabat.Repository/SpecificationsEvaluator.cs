@@ -19,6 +19,8 @@ namespace Talabat.Infrastructure
 
             if (spec.Criteria != null)
                 query = query.Where(spec.Criteria);//query = _dbContext.Set<Product>().Where(p => p.Id == id)
+            //if (spec.Wheres != null && spec.Wheres.Count() > 0)
+            //    query = spec.Wheres.Aggregate(query, (currentQuery, whereExpression) => currentQuery.Where(whereExpression));
             if (spec.OrderBy != null)
                 query = query.OrderBy(spec.OrderBy);
             else if (spec.OrderByDesc != null)
