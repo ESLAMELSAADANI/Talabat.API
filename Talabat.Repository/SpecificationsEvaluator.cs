@@ -19,6 +19,10 @@ namespace Talabat.Infrastructure
 
             if (spec.Criteria != null)
                 query = query.Where(spec.Criteria);//query = _dbContext.Set<Product>().Where(p => p.Id == id)
+            if (spec.OrderBy != null)
+                query = query.OrderBy(spec.OrderBy);
+            else if (spec.OrderByDesc != null)
+                query = query.OrderByDescending(spec.OrderByDesc);
 
             //Includes
             //1- p => p.Brand
@@ -28,7 +32,6 @@ namespace Talabat.Infrastructure
             //query = _dbContext.Set<Product>().Where(p => p.Id == id).Include(p => p.Brand).Include(p => p.Category)
 
             return query;
-
         }
     }
 }

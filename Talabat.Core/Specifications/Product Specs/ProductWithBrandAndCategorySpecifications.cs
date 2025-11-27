@@ -12,8 +12,9 @@ namespace Talabat.Core.Specifications.Product_Specs
     {
         //When Query Of Get All Products => There are only includes() specs not other like where() 
         //This constructor will be used for creating an object, that will be get all products - query of get all products.
-        public ProductWithBrandAndCategorySpecifications() : base()
+        public ProductWithBrandAndCategorySpecifications(string? sort) : base()
         {
+            AddSort(sort);
             AddIncludes();
         }
 
@@ -28,5 +29,30 @@ namespace Talabat.Core.Specifications.Product_Specs
             Includes.Add(p => p.Brand);
             Includes.Add(p => p.Category);
         }
+        private void AddSort(string? sort)
+        {
+            if (!string.IsNullOrEmpty(sort))
+                switch (sort)
+                {
+                    case "PriceAsc":
+                        SetOrderBy(p => p.Price);
+                        break;
+                    case "PriceDesc":
+                        SetOrderByDesc(p => p.Price);
+                        break;
+                    case "NameAsc":
+                        SetOrderBy(p => p.Name);
+                        break;
+                    case "NameDesc":
+                        SetOrderByDesc(p => p.Name);
+                        break;
+                    default:
+                        SetOrderBy(p => p.Name);
+                        break;
+                }
+            else
+                SetOrderBy(p => p.Name);//if sort = null - consumer not pass value for sort parameter when consume getAll() endpoint.
+        }
+
     }
 }
