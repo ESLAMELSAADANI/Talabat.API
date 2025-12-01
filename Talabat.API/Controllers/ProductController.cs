@@ -28,11 +28,11 @@ namespace Talabat.API.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(IReadOnlyList<ProductToReturnDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IReadOnlyList<ProductToReturnDTO>>> GetProducts(string? sort,int? brandId,int? categoryId)
+        public async Task<ActionResult<IReadOnlyList<ProductToReturnDTO>>> GetProducts([FromQuery] ProductSpecParams specParams)
         {
             //var products = await _productRepo.GetAllAsync();
 
-            var spec = new ProductWithBrandAndCategorySpecifications(sort,brandId,categoryId);
+            var spec = new ProductWithBrandAndCategorySpecifications(specParams);
             var products = await _productRepo.GetAllWithSpecAsync(spec);
 
             if (products == null || products.Count() == 0)

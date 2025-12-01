@@ -19,19 +19,23 @@ namespace Talabat.Infrastructure
 
             if (spec.Criteria != null)
                 query = query.Where(spec.Criteria);//query = _dbContext.Set<Product>().Where(p => p.Id == id)
-            //if (spec.Wheres != null && spec.Wheres.Count() > 0)
-            //    query = spec.Wheres.Aggregate(query, (currentQuery, whereExpression) => currentQuery.Where(whereExpression));
+            
             if (spec.OrderBy != null)
                 query = query.OrderBy(spec.OrderBy);
             else if (spec.OrderByDesc != null)
                 query = query.OrderByDescending(spec.OrderByDesc);
+
+            //Pagination => Skip & Take
+            if (spec.IsPaginationEnabled == true)
+                query = query.Skip(spec.Skip).Take(spec.Take);
+            //query = _dbContext.Set<Product>().Where(p => true && true).OrderBy(p => p.Name).Skip(10).Take(5);
 
             //Includes
             //1- p => p.Brand
             //2- p => p.Category
             query = spec.Includes.Aggregate(query, (currentQuery, IncludeExpression) => currentQuery.Include(IncludeExpression));
 
-            //query = _dbContext.Set<Product>().Where(p => p.Id == id).Include(p => p.Brand).Include(p => p.Category)
+            //query = _dbContext.Set<Product>().Where(p => true && true).OrderBy(p => p.Name).Skip(10).Take(5).Include(p => p.Brand).Include(p => p.Category)
 
             return query;
         }

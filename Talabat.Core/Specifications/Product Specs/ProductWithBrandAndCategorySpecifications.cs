@@ -12,11 +12,23 @@ namespace Talabat.Core.Specifications.Product_Specs
     {
         //When Query Of Get All Products => There are only includes() specs not other like where() 
         //This constructor will be used for creating an object, that will be get all products - query of get all products.
-        public ProductWithBrandAndCategorySpecifications(string? sort, int? brandId, int? categoryId) : base(p => (!brandId.HasValue || p.BrandId == brandId.Value) && (!categoryId.HasValue || p.CategoryId == categoryId.Value))
+        public ProductWithBrandAndCategorySpecifications(ProductSpecParams specParams)
+            : base(p =>
+                        (!specParams.BrandId.HasValue || p.BrandId == specParams.BrandId.Value) &&
+                        (!specParams.CategoryId.HasValue || p.CategoryId == specParams.CategoryId.Value)
+            )
         {
             //AddFilters(brandId, categoryId);
-            AddSort(sort);
+
+            AddSort(specParams.Sort);
             AddIncludes();
+            //Total Products = 18
+            //PageSize = 5 Products
+            //PagesNumber = 18~20 / 5 =>  4
+            //4 pages => Every Page Contain 5 products, last page contain 4 products
+            //pageIndex = 3 => Mean i need the page number 3 mean the third five products from 15 - 20.
+            //skip 10 and take 5.
+            ApplyPagination((specParams.PageIndex - 1) * specParams.PageSize, specParams.PageSize);
         }
 
 
