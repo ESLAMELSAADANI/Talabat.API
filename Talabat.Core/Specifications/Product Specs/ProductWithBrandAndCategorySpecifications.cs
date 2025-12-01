@@ -12,12 +12,13 @@ namespace Talabat.Core.Specifications.Product_Specs
     {
         public ProductWithBrandAndCategorySpecifications()
         {
-            
+
         }
         //When Query Of Get All Products => There are only includes() specs not other like where() 
         //This constructor will be used for creating an object, that will be get all products - query of get all products.
         public ProductWithBrandAndCategorySpecifications(ProductSpecParams specParams)
             : base(p =>
+                        (string.IsNullOrEmpty(specParams.Search) || p.Name.ToLower().Contains(specParams.Search)) &&
                         (!specParams.BrandId.HasValue || p.BrandId == specParams.BrandId.Value) &&
                         (!specParams.CategoryId.HasValue || p.CategoryId == specParams.CategoryId.Value)
             )

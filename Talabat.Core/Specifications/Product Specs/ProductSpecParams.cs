@@ -22,5 +22,14 @@ namespace Talabat.Core.Specifications.Product_Specs
 
         public int PageIndex { get; set; } = 1;
 
+        private string? search;
+
+        public string? Search
+        {
+            get { return search; }
+            set { search = value?.ToLower(); }
+        }
+
+
     }
 }
