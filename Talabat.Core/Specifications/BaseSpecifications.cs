@@ -25,7 +25,7 @@ namespace Talabat.Core.Specifications
             //when we create an instance of this class
         }
 
-        public BaseSpecifications(Expression<Func<T, bool>> criteria)
+        public BaseSpecifications(Expression<Func<T, bool>>? criteria)
         {
             Criteria = criteria;
         }

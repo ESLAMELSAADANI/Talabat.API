@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using System.Threading.Tasks;
 using Talabat.API.DTOs;
 using Talabat.API.Errors;
+using Talabat.API.Helpers;
 using Talabat.Core.Entities;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Core.Specifications;
@@ -28,7 +30,7 @@ namespace Talabat.API.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(IReadOnlyList<ProductToReturnDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IReadOnlyList<ProductToReturnDTO>>> GetProducts([FromQuery] ProductSpecParams specParams)
+        public async Task<ActionResult<Pagination<ProductToReturnDTO>>> GetProducts([FromQuery] ProductSpecParams specParams)
         {
             //var products = await _productRepo.GetAllAsync();
 
@@ -40,7 +42,13 @@ namespace Talabat.API.Controllers
 
             var productsDTO = _mapper.Map<IReadOnlyList<ProductToReturnDTO>>(products);
 
-            return Ok(productsDTO);
+            var countSpec = new ProductsWithFilterationForCountSpecification(spec.Criteria);
+
+            var count = await _productRepo.GetCountAsync(countSpec);
+
+            var result = new Pagination<ProductToReturnDTO>(specParams.PageIndex, specParams.PageSize, count, productsDTO);
+
+            return Ok(result);
         }
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ProductToReturnDTO), StatusCodes.Status200OK)]

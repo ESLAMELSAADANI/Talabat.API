@@ -10,6 +10,10 @@ namespace Talabat.Core.Specifications.Product_Specs
 {
     public class ProductWithBrandAndCategorySpecifications : BaseSpecifications<Product>
     {
+        public ProductWithBrandAndCategorySpecifications()
+        {
+            
+        }
         //When Query Of Get All Products => There are only includes() specs not other like where() 
         //This constructor will be used for creating an object, that will be get all products - query of get all products.
         public ProductWithBrandAndCategorySpecifications(ProductSpecParams specParams)
@@ -25,7 +29,7 @@ namespace Talabat.Core.Specifications.Product_Specs
             //Total Products = 18
             //PageSize = 5 Products
             //PagesNumber = 18~20 / 5 =>  4
-            //4 pages => Every Page Contain 5 products, last page contain 4 products
+            //4 pages => Every Page Contain 5 products, last page contain 3 products
             //pageIndex = 3 => Mean i need the page number 3 mean the third five products from 15 - 20.
             //skip 10 and take 5.
             ApplyPagination((specParams.PageIndex - 1) * specParams.PageSize, specParams.PageSize);
