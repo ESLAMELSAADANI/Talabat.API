@@ -1,14 +1,10 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using System.Threading.Tasks;
 using Talabat.API.DTOs;
 using Talabat.API.Errors;
 using Talabat.API.Helpers;
 using Talabat.Core.Entities;
 using Talabat.Core.Repositories.Contract;
-using Talabat.Core.Specifications;
 using Talabat.Core.Specifications.Product_Specs;
 
 namespace Talabat.API.Controllers

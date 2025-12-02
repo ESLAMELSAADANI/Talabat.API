@@ -1,13 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Talabat.Core.Entities;
 using Talabat.Core.Specifications;
 
-namespace Talabat.Infrastructure
+namespace Talabat.Infrastructure.Generic_Repository
 {
     internal static class SpecificationsEvaluator<TEntity> where TEntity : BaseEntity
     {
@@ -19,7 +14,7 @@ namespace Talabat.Infrastructure
 
             if (spec.Criteria != null)
                 query = query.Where(spec.Criteria);//query = _dbContext.Set<Product>().Where(p => p.Id == id)
-            
+
             if (spec.OrderBy != null)
                 query = query.OrderBy(spec.OrderBy);
             else if (spec.OrderByDesc != null)

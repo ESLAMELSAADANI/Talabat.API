@@ -1,6 +1,4 @@
-﻿using Talabat.Core.Entities;
-
-namespace Talabat.API.DTOs
+﻿namespace Talabat.API.DTOs
 {
     public class ProductToReturnDTO
     {

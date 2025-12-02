@@ -1,17 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
-using Talabat.Core.Entities;
-using Talabat.Core.Repositories.Contract;
-using Talabat.Infrastructure;
-using Talabat.Infrastructure.Data;
-using AutoMapper;
-using Talabat.API.Helpers;
-using Microsoft.AspNetCore.Mvc;
-using Talabat.API.Errors;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Talabat.API.Middlewares;
-using System.Net;
 using Talabat.API.Extensions;
+using Talabat.API.Middlewares;
+using Talabat.Infrastructure.Generic_Repository.Data;
 
 namespace Talabat.API
 {
