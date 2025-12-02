@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 using Talabat.API.Extensions;
 using Talabat.API.Middlewares;
 using Talabat.Infrastructure.Generic_Repository.Data;
@@ -32,6 +33,13 @@ namespace Talabat.API
             //======== Instead of previous lines =======
             //ApplicationServicesExtension.AddApplicationServices(builder.Services);
             builder.Services.AddApplicationServices();//Call it as extension method for the contaier builder.services which is of type IServiceCollection
+
+            //Add Redis Service To DIC
+            builder.Services.AddScoped<IConnectionMultiplexer>((serviceProvider) =>
+            {
+                var connection = builder.Configuration.GetConnectionString("Redis");
+                return ConnectionMultiplexer.Connect(connection!);
+            });
 
             #endregion
 
