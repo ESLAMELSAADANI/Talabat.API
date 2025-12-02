@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 using Talabat.API.Extensions;
 using Talabat.API.Middlewares;
+using Talabat.Core.Repositories.Contract;
+using Talabat.Infrastructure.Basket_Repository;
 using Talabat.Infrastructure.Generic_Repository.Data;
 
 namespace Talabat.API
@@ -41,6 +43,7 @@ namespace Talabat.API
                 return ConnectionMultiplexer.Connect(connection!);
             });
 
+            builder.Services.AddScoped<IBasketRepository, BasketRepository>();
             #endregion
 
             var app = builder.Build();
