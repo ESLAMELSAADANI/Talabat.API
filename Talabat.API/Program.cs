@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 using Talabat.API.Extensions;
 using Talabat.API.Middlewares;
+using Talabat.Core.Entities.Identity;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Infrastructure._Identity;
 using Talabat.Infrastructure.Basket_Repository;
@@ -50,6 +52,8 @@ namespace Talabat.API
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection"));
             });
+
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationIdentityDbContext>();
             #endregion
 
             var app = builder.Build();
@@ -75,7 +79,8 @@ namespace Talabat.API
                 await StoreContextSeed.SeedAsync(_dbContext);//Data Seeding => For StoreContext
 
                 await _IdentityDbContext.Database.MigrateAsync();//update-Database => For ApplicationIdentityDbContext
-                //await IdentityDbContextSeed.SeedAsync(_IdentityDbContext);//DataSeeding => For ApplicationIdentityDbContext
+                var _userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                await ApplicationIdentityDbContextSeed.SeedUserAsync(_userManager);//DataSeeding => For ApplicationIdentityDbContext
             }
             catch (Exception ex)
             {
@@ -89,6 +94,32 @@ namespace Talabat.API
             // Configure the HTTP request pipeline.
 
             app.UseMiddleware<ExceptionMiddleware>();
+
+            app.UseStatusCodePages(async context =>
+            {
+                var response = context.HttpContext.Response;
+
+                // Customize for 405 Method Not Allowed
+                if (response.StatusCode == StatusCodes.Status405MethodNotAllowed)
+                {
+                    response.ContentType = "application/json";
+                    await response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(new
+                    {
+                        status = 405,
+                        message = "Invalid URL or method not allowed"
+                    }));
+                }
+                // Customize for 404 Not Found
+                else if (response.StatusCode == StatusCodes.Status404NotFound)
+                {
+                    response.ContentType = "application/json";
+                    await response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(new
+                    {
+                        status = 404,
+                        message = "URL not found"
+                    }));
+                }
+            });
 
             ///Make Middleware By Request Delegate approach in program.cs instead of make middleware class.
             ///app.Use(async (httpContext, _next) =>
@@ -127,7 +158,7 @@ namespace Talabat.API
             //if (Unauthorize URL) Or (Invalid URl)
             //If not provide URL => All responses will ne NotFound()
             //And this is not logic bcz if unauthorize URL need to return UnAuthorized() not NotFound()
-            //In Contrloller i willbind this parameter to the status code of the error.
+            //In Contrloller i will bind this parameter to the status code of the error.
             app.UseHttpsRedirection();
 
             app.UseStaticFiles();
