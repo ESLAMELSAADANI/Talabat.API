@@ -3,8 +3,9 @@ using StackExchange.Redis;
 using Talabat.API.Extensions;
 using Talabat.API.Middlewares;
 using Talabat.Core.Repositories.Contract;
+using Talabat.Infrastructure._Identity;
 using Talabat.Infrastructure.Basket_Repository;
-using Talabat.Infrastructure.Generic_Repository.Data;
+using Talabat.Infrastructure.Data;
 
 namespace Talabat.API
 {
@@ -44,6 +45,11 @@ namespace Talabat.API
             });
 
             builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+
+            builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection"));
+            });
             #endregion
 
             var app = builder.Build();
@@ -56,6 +62,7 @@ namespace Talabat.API
             var services = scope.ServiceProvider;
 
             var _dbContext = services.GetRequiredService<StoreContext>();
+            var _IdentityDbContext = services.GetRequiredService<ApplicationIdentityDbContext>();
 
 
             var loggerFactory = services.GetRequiredService<ILoggerFactory>();
@@ -63,9 +70,12 @@ namespace Talabat.API
             var logger = loggerFactory.CreateLogger<Program>();
             try
             {
-                await _dbContext.Database.MigrateAsync();//Update-Database
-                //await StoreContextSeed.SeedAsync(_dbContext);//Data Seeding
-                await StoreContextSeed.SeedAsync(_dbContext);//Data Seeding
+                await _dbContext.Database.MigrateAsync();//Update-Database => For StoreContext
+                //await StoreContextSeed.SeedAsync(_dbContext);//Data Seeding => For StoreContext
+                await StoreContextSeed.SeedAsync(_dbContext);//Data Seeding => For StoreContext
+
+                await _IdentityDbContext.Database.MigrateAsync();//update-Database => For ApplicationIdentityDbContext
+                //await IdentityDbContextSeed.SeedAsync(_IdentityDbContext);//DataSeeding => For ApplicationIdentityDbContext
             }
             catch (Exception ex)
             {
