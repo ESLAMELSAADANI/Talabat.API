@@ -16,11 +16,15 @@ namespace Talabat.API.Errors
         {
             return statusCode switch // Switch Expression => Syntax Sugar for old switch-case.
             {
-                400 => "A bad request, you have made",
-                401 => "Authorized, you are not",
-                404 => "Resource was not found",
-                500 => "Errors are the path to the dark side. Errors lead to anger. Anger leads to hate. Hate leads to career change",
-                _ => null
+                400 => "Bad Request",
+                401 => "Unauthorized",
+                403 => "Forbidden",
+                404 => "Not Found",
+                405 => "Method Not Allowed",
+                409 => "Conflict",
+                422 => "Unprocessable Entity",
+                500 => "Internal Server Error",
+                _ => "Unexpected Error"
             };
         }
     }
