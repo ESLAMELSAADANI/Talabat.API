@@ -2,6 +2,7 @@
 using Talabat.API.DTOs;
 using Talabat.Core.Entities;
 using Talabat.Core.Entities.Basket;
+using Talabat.Core.Entities.Identity;
 
 namespace Talabat.API.Helpers
 {
@@ -16,6 +17,8 @@ namespace Talabat.API.Helpers
 
             CreateMap<CustomerBasketDTO, CustomerBasket>();
             CreateMap<BasketItemDTO, BasketItem>();
+            CreateMap<RegisterDTO, ApplicationUser>();
+
         }
     }
 }

@@ -3,6 +3,7 @@ using Talabat.API.Errors;
 
 namespace Talabat.API.Middlewares
 {
+
     ///Make middleware by convension
     ///public class ExceptionMiddleware
     ///{

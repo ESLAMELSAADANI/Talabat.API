@@ -165,7 +165,6 @@ namespace Talabat.API
 
             app.UseAuthorization();
 
-
             app.MapControllers();
 
 
