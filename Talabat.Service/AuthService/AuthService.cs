@@ -27,7 +27,7 @@ namespace Talabat.Application.AuthService
         public async Task<string> CreateTokenAsync(ApplicationUser user, UserManager<ApplicationUser> userManager)
         {
             //1- Header => algorithm and token type => setted when generate the token object JwtSecurityToken()
-            
+
             //2- Payload => private & registered claims
             //Private Claims => User Defined
             var privateClaims = new List<Claim>()
@@ -42,7 +42,7 @@ namespace Talabat.Application.AuthService
             {
                 privateClaims.Add(new Claim(ClaimTypes.Role, role));
             }
-            
+
             //3- Signature
             //SecreKey
             var authKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:AuthKey"] ?? string.Empty));
@@ -52,8 +52,8 @@ namespace Talabat.Application.AuthService
                 audience: _configuration["JWT:ValidAudience"],
                 issuer: _configuration["JWT:ValidIssuer"],
                 expires: DateTime.Now.AddDays(double.Parse(_configuration["JWT:DurationInDays"] ?? "0")),
-                claims:privateClaims,
-                signingCredentials:new SigningCredentials(authKey,SecurityAlgorithms.HmacSha256Signature)
+                claims: privateClaims,
+                signingCredentials: new SigningCredentials(authKey, SecurityAlgorithms.HmacSha256Signature)
                 );
 
             //Final String Token

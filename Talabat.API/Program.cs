@@ -3,8 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 using Talabat.API.Extensions;
 using Talabat.API.Middlewares;
+using Talabat.Application.AuthService;
 using Talabat.Core.Entities.Identity;
 using Talabat.Core.Repositories.Contract;
+using Talabat.Core.Services.Contract;
 using Talabat.Infrastructure._Identity;
 using Talabat.Infrastructure.Basket_Repository;
 using Talabat.Infrastructure.Data;
@@ -54,6 +56,8 @@ namespace Talabat.API
             });
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationIdentityDbContext>();
+
+            builder.Services.AddScoped<IAuthService, AuthService>();
             #endregion
 
             var app = builder.Build();

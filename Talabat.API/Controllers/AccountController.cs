@@ -6,17 +6,20 @@ using System.Threading.Tasks;
 using Talabat.API.DTOs;
 using Talabat.API.Errors;
 using Talabat.Core.Entities.Identity;
+using Talabat.Core.Services.Contract;
 
 namespace Talabat.API.Controllers
 {
     public class AccountController : BaseApiController
     {
+        private readonly IAuthService _authService;
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public AccountController(IMapper mapper, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AccountController(IAuthService authService, IMapper mapper, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
+            _authService = authService;
             _mapper = mapper;
             _userManager = userManager;
             _signInManager = signInManager;
@@ -37,7 +40,7 @@ namespace Talabat.API.Controllers
             {
                 DisplayName = user.DisplayName,
                 Email = user.Email,
-                Token = "This Will Be Token"
+                Token = await _authService.CreateTokenAsync(user, _userManager)
             });
         }
         [HttpPost("register")]
@@ -63,7 +66,7 @@ namespace Talabat.API.Controllers
             {
                 DisplayName = user.DisplayName,
                 Email = user.Email,
-                Token = "This Will Be Token"
+                Token = await _authService.CreateTokenAsync(user, _userManager)
             });
         }
     }
