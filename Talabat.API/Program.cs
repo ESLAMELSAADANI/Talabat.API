@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using StackExchange.Redis;
 using System.Text;
 using Talabat.API.Extensions;
@@ -28,7 +29,11 @@ namespace Talabat.API
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;//ignore reference loop when serialize, just serialize one level of the object - Navigationprop
+            }
+            );
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
@@ -63,7 +68,7 @@ namespace Talabat.API
 
             //Add Authentication Services
             builder.Services.AddAuthServices(builder);
-                
+
             #endregion
 
             var app = builder.Build();

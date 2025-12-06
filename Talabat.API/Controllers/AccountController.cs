@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Talabat.API.DTOs;
 using Talabat.API.Errors;
+using Talabat.API.Extensions;
 using Talabat.Core.Entities.Identity;
 using Talabat.Core.Services.Contract;
 
@@ -90,6 +91,16 @@ namespace Talabat.API.Controllers
 
         }
 
+        [Authorize]
+        [HttpGet("address")]// GET : /api/account/address
+        public async Task<ActionResult<AddressDTO>> GetUserAddress()
+        {
+            var email = User.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
+
+            var user = await _userManager.FindUserWithAddressByEmailAsync(User);
+
+            return Ok(_mapper.Map<AddressDTO>(user.Address));
+        }
 
     }
 }
