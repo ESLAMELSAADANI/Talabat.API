@@ -1,6 +1,10 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
+using System.Text;
 using Talabat.API.Extensions;
 using Talabat.API.Middlewares;
 using Talabat.Application.AuthService;
@@ -57,7 +61,11 @@ namespace Talabat.API
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationIdentityDbContext>();
 
-            builder.Services.AddScoped<IAuthService, AuthService>();
+            //Add Authentication Services
+            builder.Services.AddAuthServices(builder);
+
+           
+
             #endregion
 
             var app = builder.Build();

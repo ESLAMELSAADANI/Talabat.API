@@ -1,8 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using Talabat.API.Errors;
 using Talabat.API.Helpers;
 using Talabat.API.Middlewares;
+using Talabat.Application.AuthService;
 using Talabat.Core.Repositories.Contract;
+using Talabat.Core.Services.Contract;
 using Talabat.Infrastructure.Generic_Repository;
 
 namespace Talabat.API.Extensions
@@ -39,6 +44,35 @@ namespace Talabat.API.Extensions
 
             return services;
 
+        }
+
+        public static IServiceCollection AddAuthServices(this IServiceCollection services,WebApplicationBuilder builder)
+        {
+            var jwtConfig = builder.Configuration.GetSection("JWT");
+            //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)//For Bearer Authentication Scheme That Validate the token.
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;//Specify the authentication schema 
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;//Specify Default challenge authentication schema validtor handler for all endpoints that use [Authorize] attribute, instead of write =>  [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+            })
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = jwtConfig["ValidIssuer"],
+                        ValidateAudience = true,
+                        ValidAudience = jwtConfig["ValidAudience"],
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig["AuthKey"] ?? string.Empty)),
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.FromMinutes(5)
+                    };
+                }
+                       );
+            services.AddScoped<IAuthService, AuthService>();
+
+            return services;
         }
     }
 }
