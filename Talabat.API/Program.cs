@@ -63,9 +63,7 @@ namespace Talabat.API
 
             //Add Authentication Services
             builder.Services.AddAuthServices(builder);
-
-           
-
+                
             #endregion
 
             var app = builder.Build();
