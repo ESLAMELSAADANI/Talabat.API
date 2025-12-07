@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Talabat.Core.Entities;
+using Talabat.Core.Entities.Order_Aggregate;
 
 namespace Talabat.Infrastructure.Data
 {
@@ -12,9 +14,9 @@ namespace Talabat.Infrastructure.Data
     {
         public async static Task SeedAsync(StoreContext _dbContext)
         {
-            if (_dbContext.ProductBrands.Count() == 0)
+            if (!_dbContext.ProductBrands.Any())
             {
-                var brandsData = File.ReadAllText("../Talabat.Infrastructure/Generic_Repository/Data/DataSeed/brands.json");
+                var brandsData = File.ReadAllText("../Talabat.Infrastructure/_Data/DataSeed/brands.json");
                 var brands = JsonSerializer.Deserialize<List<ProductBrand>>(brandsData);
 
                 if (brands?.Count() > 0)
@@ -32,9 +34,9 @@ namespace Talabat.Infrastructure.Data
                 }
             }
 
-            if (_dbContext.ProductCategories.Count() == 0)
+            if (!_dbContext.ProductCategories.Any())
             {
-                var categoryData = File.ReadAllText("../Talabat.Infrastructure/Generic_Repository/Data/DataSeed/categories.json");
+                var categoryData = File.ReadAllText("../Talabat.Infrastructure/_Data/DataSeed/categories.json");
                 var categories = JsonSerializer.Deserialize<List<ProductCategory>>(categoryData);
 
                 if (categories?.Count() > 0)
@@ -52,9 +54,9 @@ namespace Talabat.Infrastructure.Data
                 }
             }
 
-            if (_dbContext.Products.Count() == 0)
+            if (!_dbContext.Products.Any())
             {
-                var productsData = File.ReadAllText("../Talabat.Infrastructure/Generic_Repository/Data/DataSeed/products.json");
+                var productsData = File.ReadAllText("../Talabat.Infrastructure/_Data/DataSeed/products.json");
                 var products = JsonSerializer.Deserialize<List<Product>>(productsData);
 
                 if (products?.Count() > 0)
@@ -71,6 +73,21 @@ namespace Talabat.Infrastructure.Data
                     await _dbContext.SaveChangesAsync();
                 }
             }
+
+            if (!_dbContext.DeliveryMethods.Any())
+            {
+                var deliveryMethodsData = File.ReadAllText("../Talabat.Infrastructure/_Data/DataSeed/delivery.json");
+                var deliveryMethods = JsonSerializer.Deserialize<List<DeliveryMethod>>(deliveryMethodsData);
+
+                if (deliveryMethods?.Count() > 0)
+                {
+                    foreach (var deliveryMethod in deliveryMethods)
+                    {
+                        _dbContext.Set<DeliveryMethod>().Add(deliveryMethod);
+                    }
+                    await _dbContext.SaveChangesAsync();
+                }
+            }
         }
     }
-}         
+}
