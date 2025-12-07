@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
 using Talabat.Core.Entities.Order_Aggregate;
 
 namespace Talabat.Infrastructure._Data.Order_Config
@@ -17,6 +18,14 @@ namespace Talabat.Infrastructure._Data.Order_Config
 
             builder.Property(order => order.SubTotal)
                    .HasColumnType("decimal(12,2)");
+
+            builder.HasOne(order => order.DeliveryMethod)
+                   .WithMany()
+                   .OnDelete(DeleteBehavior.SetNull);//So when delete specific delevery method, don't delete all orders shipped with this delivery method.
+
+            builder.HasMany(order => order.Items)
+                    .WithOne()
+                    .OnDelete(DeleteBehavior.Cascade);// So when delete specific Order Item,delete all orders that has this item.
         }
     }
 }
