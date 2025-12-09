@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Talabat.Core;
 using Talabat.Core.Entities;
 using Talabat.Core.Entities.Order_Aggregate;
 using Talabat.Core.Repositories.Contract;
@@ -20,9 +21,7 @@ namespace Talabat.Application.OrderService
 
         public OrderService(
             IBasketRepository basketRepo,
-            IGenericRepository<Product> productRepo,
-            IGenericRepository<DeliveryMethod> deliveryMethodRepo,
-            IGenericRepository<Order> orderRepo
+            IUnitOfWork 
 
             )
         {
