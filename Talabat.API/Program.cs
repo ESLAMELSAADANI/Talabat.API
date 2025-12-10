@@ -110,32 +110,6 @@ namespace Talabat.API
 
             app.UseMiddleware<ExceptionMiddleware>();
 
-            app.UseStatusCodePages(async context =>
-            {
-                var response = context.HttpContext.Response;
-
-                // Customize for 405 Method Not Allowed
-                if (response.StatusCode == StatusCodes.Status405MethodNotAllowed)
-                {
-                    response.ContentType = "application/json";
-                    await response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(new
-                    {
-                        status = 405,
-                        message = "Invalid URL or method not allowed"
-                    }));
-                }
-                // Customize for 404 Not Found
-                else if (response.StatusCode == StatusCodes.Status404NotFound)
-                {
-                    response.ContentType = "application/json";
-                    await response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(new
-                    {
-                        status = 404,
-                        message = "URL not found"
-                    }));
-                }
-            });
-
             ///Make Middleware By Request Delegate approach in program.cs instead of make middleware class.
             ///app.Use(async (httpContext, _next) =>
             ///{

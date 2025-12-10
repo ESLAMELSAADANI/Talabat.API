@@ -45,13 +45,15 @@ namespace Talabat.Application.OrderService
 
             if (basket?.Items?.Count > 0)
             {
+                var productRepository = _unitOfWork.Repository<Product>();
                 foreach (var item in basket.Items)
                 {
                     //I get the actual product because i don't trust the user, he could send invalid date for name or picture URL.
                     //I trust only the Id of the item and the quantity bcz  it's the id of product and the quantity of this product he would to buy.
 
                     //var product = await _productRepo.GetAsync(item.Id);
-                    var product = await _unitOfWork.Repository<Product>().GetAsync(item.Id);
+                    //UOW => Unit Of Work
+                    var product = await productRepository.GetAsync(item.Id);
                     var productItemOrdered = new ProductItemOrdered(product.Id, product.Name, product.PictureUrl);
                     var orderItem = new OrderItem(productItemOrdered, product.Price, item.Quantity);
 
@@ -78,7 +80,7 @@ namespace Talabat.Application.OrderService
 
             // 6. Save To Database [TODO]
             var result = await _unitOfWork.CompleteAsync();
-            
+
             //7. Return The Order 
             if (result <= 0) return null;
             return order;

@@ -14,13 +14,13 @@ namespace Talabat.Infrastructure.UOW
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private Dictionary<string, GenericRepository<BaseEntity>> _repositories;
+        private Dictionary<string, object> _repositories;
         private readonly StoreContext _dbContext;
 
         public UnitOfWork(StoreContext dbContext)
         {
             _dbContext = dbContext;
-            _repositories = new Dictionary<string, GenericRepository<BaseEntity>>();
+            _repositories = new Dictionary<string, object>();
         }
         public async Task<int> CompleteAsync()
         {
@@ -38,10 +38,10 @@ namespace Talabat.Infrastructure.UOW
             var key = typeof(TEntity).Name;//Order
             if (!_repositories.ContainsKey(key))
             {
-                var repository = new GenericRepository<TEntity>(_dbContext) as GenericRepository<BaseEntity>;//If explicit casting fail return null.
+                var repository = new GenericRepository<TEntity>(_dbContext);
                 _repositories.Add(key, repository);
             }
-            return _repositories[key] as IGenericRepository<TEntity>;
+            return _repositories[key] as GenericRepository<TEntity>;
         }
     }
 }
