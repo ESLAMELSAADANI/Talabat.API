@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Talabat.API.DTOs;
 using Talabat.API.Errors;
@@ -20,6 +21,9 @@ namespace Talabat.API.Controllers
         }
 
         [HttpGet]//Get: /api/basket?id={id}
+        [EndpointSummary("Get basket by it's id")]
+        [ProducesResponseType(typeof(CustomerBasket), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<CustomerBasket>> GetBasket(string id)
         {
             var basket = await _basketRepository.GetBasketAsync(id);
@@ -27,6 +31,9 @@ namespace Talabat.API.Controllers
         }
 
         [HttpPost]//Post : /api/basket
+        [EndpointSummary("create or update specific basket")]
+        [ProducesResponseType(typeof(CustomerBasket), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<CustomerBasket>> UpdateBasket(CustomerBasketDTO basketDTO)
         {
             var basket = _mapper.Map<CustomerBasket>(basketDTO);
@@ -37,6 +44,9 @@ namespace Talabat.API.Controllers
         }
 
         [HttpDelete]//Delete : /api/basket
+        [EndpointSummary("Delete basket by it's id")]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<bool>> DeleteBasket(string id)
         {
             var basketDeleted = await _basketRepository.DeleteBasketAsync(id);

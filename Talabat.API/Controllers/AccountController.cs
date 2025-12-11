@@ -29,6 +29,9 @@ namespace Talabat.API.Controllers
         }
 
         [HttpPost("login")]// Post : /api/account/login
+        [EndpointSummary("Login")]
+        [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<UserDTO>> Login(LoginDTO model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
@@ -47,6 +50,9 @@ namespace Talabat.API.Controllers
             });
         }
         [HttpPost("register")]
+        [EndpointSummary("Register")]
+        [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiValidationErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<UserDTO>> Register(RegisterDTO model)
         {
             var user = new ApplicationUser()
@@ -75,6 +81,9 @@ namespace Talabat.API.Controllers
 
         [Authorize]
         [HttpGet]
+        [EndpointSummary("Get current logged in user")]
+        [ProducesResponseType(typeof(UserDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<UserDTO>> GetCurrentUser()
         {
             var email = User.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
@@ -93,6 +102,9 @@ namespace Talabat.API.Controllers
 
         [Authorize]
         [HttpGet("address")]// GET : /api/account/address
+        [EndpointSummary("Get address of current logged in user")]
+        [ProducesResponseType(typeof(AddressDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<AddressDTO>> GetUserAddress()
         {
             var email = User.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
@@ -104,6 +116,10 @@ namespace Talabat.API.Controllers
 
         [Authorize]
         [HttpPut("address")]// PUT : /api/account/address
+        [EndpointSummary("Update address of current logged in user")]
+        [ProducesResponseType(typeof(Address), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ApiValidationErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Address>> UpdateUserAddress(AddressDTO address)
         {
             var updatedAddress = _mapper.Map<Address>(address);

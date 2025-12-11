@@ -37,7 +37,7 @@ namespace Talabat.Core.Specifications
         public void ApplyPagination(int skip, int take)
         {
             IsPaginationEnabled = true;
-            Skip = skip;
+            Skip = skip; 
             Take = take;
         }
     }
