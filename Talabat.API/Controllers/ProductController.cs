@@ -60,7 +60,7 @@ namespace Talabat.API.Controllers
             //var product = await _productRepo.GetAsync(id);
 
             var spec = new ProductWithBrandAndCategorySpecifications(id);
-            var product = await _productRepo.GetWithSpecAsync(spec);
+            var product = await _productRepo.GetByIdWithSpecAsync(spec);
 
             if (product == null)
                 return NotFound(new ApiResponse(404, "Not Found!"));//404
@@ -87,7 +87,7 @@ namespace Talabat.API.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ProductBrand>> GetProductBrand(int id)
         {
-            var brand = await _productBrandRepo.GetAsync(id);
+            var brand = await _productBrandRepo.GetByIdAsync(id);
 
             if (brand == null)
                 return NotFound(new ApiResponse(StatusCodes.Status404NotFound));
@@ -110,10 +110,10 @@ namespace Talabat.API.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ProductCategory>> GetProductCategory(int id)
         {
-            var category = await _productCategoryRepo.GetAsync(id);
+            var category = await _productCategoryRepo.GetByIdAsync(id);
             if (category == null)
                 return NotFound(new ApiResponse(StatusCodes.Status404NotFound));
-            return Ok(await _productCategoryRepo.GetAsync(id));
+            return Ok(await _productCategoryRepo.GetByIdAsync(id));
         }
     }
 }
