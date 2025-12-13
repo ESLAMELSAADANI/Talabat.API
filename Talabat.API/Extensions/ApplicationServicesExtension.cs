@@ -30,6 +30,7 @@ namespace Talabat.API.Extensions
             services.AddAutoMapper(M => M.AddProfile(typeof(MappingProfiles)));
 
             services.AddTransient<ProductPictureUrlResolver>();
+            services.AddTransient<OrderItemPictureUrlResolver>();
 
             services.Configure<ApiBehaviorOptions>(options =>
             {
