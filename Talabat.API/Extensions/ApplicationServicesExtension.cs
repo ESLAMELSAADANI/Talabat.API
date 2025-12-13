@@ -24,7 +24,7 @@ namespace Talabat.API.Extensions
             //Register Unit Of Work Sevice
             services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
 
-            //services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            //services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));//I make the object manually in UnitOfWork Class.
 
 
             services.AddAutoMapper(M => M.AddProfile(typeof(MappingProfiles)));
