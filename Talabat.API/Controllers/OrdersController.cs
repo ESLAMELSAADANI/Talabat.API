@@ -11,7 +11,7 @@ using Talabat.Core.Services.Contract;
 
 namespace Talabat.API.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class OrdersController : BaseApiController
     {
         private readonly IOrderService _orderService;
@@ -54,6 +54,19 @@ namespace Talabat.API.Controllers
             var order = await _orderService.GetOrderByIdForUserAsync(email, id);
             if (order is null) return NotFound(new ApiResponse(StatusCodes.Status404NotFound));
             return Ok(_mapper.Map<OrderToReturnDTO>(order));
+        }
+
+        [HttpGet("deliveryMethods")]// GET : /api/orders/deliveryMethods
+        [ProducesResponseType(typeof(IReadOnlyList<DeliveryMethod>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetDeliveryMethods()
+        {
+            var deliveryMethods = await _orderService.GetDeliveryMethodsAsync();
+
+            if (deliveryMethods?.Count > 0)
+                return Ok(deliveryMethods);
+            return NotFound(new ApiResponse(StatusCodes.Status404NotFound));
+
         }
     }
 }

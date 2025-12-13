@@ -91,7 +91,7 @@ namespace Talabat.Application.OrderService
         {
             var orderRepo = _unitOfWork.Repository<Order>();
 
-            var spec = new OrderSpecifications(orderId,buyerEmail);
+            var spec = new OrderSpecifications(orderId, buyerEmail);
 
             var order = await orderRepo.GetByIdWithSpecAsync(spec);
 
@@ -107,9 +107,13 @@ namespace Talabat.Application.OrderService
 
             return orders;
         }
-        public Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync()
+        public async Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync()
         {
-            throw new NotImplementedException();
+            var deliveryMethodRepo = _unitOfWork.Repository<DeliveryMethod>();
+
+            var deliveryMethods = await deliveryMethodRepo.GetAllAsync();
+
+            return deliveryMethods;
         }
     }
 }
