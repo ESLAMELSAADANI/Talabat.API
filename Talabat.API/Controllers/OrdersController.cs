@@ -49,7 +49,7 @@ namespace Talabat.API.Controllers
         [ProducesResponseType(typeof(OrderToReturnDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         [EndpointSummary("Get specific order for user by order id and buyer|user email.")]
-        public async Task<ActionResult<OrderToReturnDTO>> GetOrderForUser(int id, string email)//Order Id,buyerEmail
+        public async Task<ActionResult<OrderToReturnDTO>> GetOrderForUser(int id)//Order Id
         {
             var order = await _orderService.GetOrderByIdForUserAsync(email, id);
             if (order is null) return NotFound(new ApiResponse(StatusCodes.Status404NotFound));
