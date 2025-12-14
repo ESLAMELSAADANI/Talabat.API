@@ -25,13 +25,14 @@ namespace Talabat.API.Controllers
             _mapper = mapper;
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet]// Get : /api/products
         [EndpointSummary("Get all products")]
         [ProducesResponseType(typeof(IReadOnlyList<ProductToReturnDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Pagination<ProductToReturnDTO>>> GetProducts([FromQuery] ProductSpecParams specParams)
         {
+
             var spec = new ProductWithBrandAndCategorySpecifications(specParams);
             var products = await _productService.GetProductsWithSpecAsync(spec);
 
@@ -39,6 +40,7 @@ namespace Talabat.API.Controllers
                 return NotFound(new ApiResponse(StatusCodes.Status404NotFound));
 
             var productsDTO = _mapper.Map<IReadOnlyList<ProductToReturnDTO>>(products);
+
 
             var countSpec = new ProductsWithFilterationForCountSpecification(spec.Criteria);
 
@@ -68,7 +70,7 @@ namespace Talabat.API.Controllers
         [EndpointSummary("Get all products brands")]
         [ProducesResponseType(typeof(IReadOnlyList<ProductBrand>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<ProductBrand>>> GetProductBrands()
+        public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands()
         {
             var brands = await _productService.GetBrandsAsync();
 
