@@ -7,6 +7,7 @@ using Talabat.API.Helpers;
 using Talabat.API.Middlewares;
 using Talabat.Application.AuthService;
 using Talabat.Application.OrderService;
+using Talabat.Application.ProductService;
 using Talabat.Core;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Core.Services.Contract;
@@ -20,6 +21,7 @@ namespace Talabat.API.Extensions
         //This Method Add Services To the container DIC that is of type IServiceCollection.
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            services.AddScoped(typeof(IProductService), typeof(ProductService));
             services.AddScoped(typeof(IOrderService), typeof(OrderService));
             //Register Unit Of Work Sevice
             services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
