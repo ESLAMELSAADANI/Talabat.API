@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -7,10 +8,13 @@ using Talabat.API.Helpers;
 using Talabat.API.Middlewares;
 using Talabat.Application.AuthService;
 using Talabat.Application.OrderService;
+using Talabat.Application.PaymentService;
 using Talabat.Application.ProductService;
 using Talabat.Core;
+using Talabat.Core.Entities.Identity;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Core.Services.Contract;
+using Talabat.Infrastructure._Identity;
 using Talabat.Infrastructure.Generic_Repository;
 using Talabat.Infrastructure.UOW;
 
@@ -21,6 +25,7 @@ namespace Talabat.API.Extensions
         //This Method Add Services To the container DIC that is of type IServiceCollection.
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            services.AddScoped(typeof(IPaymentService), typeof(PaymentService));
             services.AddScoped(typeof(IProductService), typeof(ProductService));
             services.AddScoped(typeof(IOrderService), typeof(OrderService));
             //Register Unit Of Work Sevice
@@ -60,6 +65,7 @@ namespace Talabat.API.Extensions
         {
             var jwtConfig = builder.Configuration.GetSection("JWT");
             //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)//For Bearer Authentication Scheme That Validate the token.
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationIdentityDbContext>();
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;//Specify the authentication schema 

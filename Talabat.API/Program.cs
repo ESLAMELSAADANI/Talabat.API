@@ -64,7 +64,6 @@ namespace Talabat.API
                 options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection"));
             });
 
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationIdentityDbContext>();
 
             //Add Authentication Services
             builder.Services.AddAuthServices(builder);
