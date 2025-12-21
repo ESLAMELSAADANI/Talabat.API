@@ -73,11 +73,25 @@ namespace Talabat.Application.OrderService
             var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(deliveryMethodId);
 
             // 5.Check that there are no orders with this payment intent exists before.
+            ///bcz if this happen, i will have 2 orders with the same payment intent 
+            ///so when pay one payment intent found that he take two orders not one
+            ///we may have 2 orders with the same payment intent in case that there is exception after order created
+            /// => var result = await _unitOfWork.CompleteAsync();
+            /// so the order will not returned to enduser
+            /// but the order saved in databse actually 
+            /// so what the end user will make ?
+            /// he will click on create order again
+            /// so will create another order with the same payment intent
+            /// so when pay/checkout, he will pay and recieve two orders
+            /// but he actually need one order.
+            /// so need to check if there is existing order with the same payment intent => delete it
+            /// just one order for one paymentIntent
+            
             var orderRepo = _unitOfWork.Repository<Order>();
             var spec = new OrderWithPaymentIntentSpecifications(basket?.PaymentIntentId);
             var existingOrder = await orderRepo.GetByIdWithSpecAsync(spec);
 
-            if(existingOrder is not null)
+            if (existingOrder is not null)
             {
                 orderRepo.Delete(existingOrder);
                 await _paymentService.CreateOrUpdatePaymentIntentAsync(basketId);//To update amount of existing order in case if it's amount still is amount of deleted|previous order.

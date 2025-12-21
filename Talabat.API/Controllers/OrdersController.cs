@@ -29,9 +29,9 @@ namespace Talabat.API.Controllers
         [EndpointSummary("Create an order")]
         public async Task<ActionResult<OrderToReturnDTO>> CreateOrder(OrderDTO orderDTO)
         {
-            //var buyerEmail = User.FindFirstValue(ClaimTypes.Email);
+            var buyerEmail = User.FindFirstValue(ClaimTypes.Email);//can't be null bcz this action is [Authorized]
             var shippingAddress = _mapper.Map<Address>(orderDTO.ShippingAddress);
-            var order = await _orderService.CreateOrderAsync(orderDTO.BuyerEmail, orderDTO.BasketId, shippingAddress, orderDTO.DeliveryMethodId);
+            var order = await _orderService.CreateOrderAsync(buyerEmail, orderDTO.BasketId, shippingAddress, orderDTO.DeliveryMethodId);
             if (order is not null)
                 return Ok(_mapper.Map<OrderToReturnDTO>(order));
             return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest));
