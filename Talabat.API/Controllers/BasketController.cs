@@ -43,10 +43,21 @@ namespace Talabat.API.Controllers
             return Ok(createdOrUpdatedBasket);
         }
 
+        [HttpPut("{basketId}/delivery")]// POST : /api/{basketId}/delivery
+        [EndpointSummary("Attach Basket To Delivery Method")]
+        [ProducesResponseType(typeof(CustomerBasket), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<CustomerBasket>> AttachBasketToDeliveryMethod(string basketId, SetDeliveryMethodDTO dto)
+        {
+            var basket = await _basketRepository.AttachBasketToDeliveryMethodAsync(basketId, dto.DeliveryMethodId);
+            if (basket is null) return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Invalid basket or delivery method"));
+            return Ok(basket);
+        }
+
         [HttpDelete]//Delete : /api/basket
         [EndpointSummary("Delete basket by it's id")]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(BadRequest), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<bool>> DeleteBasket(string id)
         {
             var basketDeleted = await _basketRepository.DeleteBasketAsync(id);

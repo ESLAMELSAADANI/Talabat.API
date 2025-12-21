@@ -18,6 +18,8 @@ namespace Talabat.Application.OrderService
     {
         private readonly IBasketRepository _basketRepo;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IPaymentService _paymentService;
+
         //private readonly IGenericRepository<Product> _productRepo;
         //private readonly IGenericRepository<DeliveryMethod> _deliveryMethodRepo;
         //private readonly IGenericRepository<Order> _orderRepo;
@@ -27,11 +29,13 @@ namespace Talabat.Application.OrderService
                                          //IGenericRepository<Product> productRepo,
                                          //IGenericRepository<DeliveryMethod> deliveryMethodRepo,
                                          //IGenericRepository<Order> orderRepo,
-            IUnitOfWork unitOfWork
+            IUnitOfWork unitOfWork,
+            IPaymentService paymentService
             )
         {
             _basketRepo = basketRepo;
             _unitOfWork = unitOfWork;
+            _paymentService = paymentService;
             //_productRepo = productRepo;
             //_deliveryMethodRepo = deliveryMethodRepo;
             //_orderRepo = orderRepo;
@@ -68,22 +72,34 @@ namespace Talabat.Application.OrderService
             // 4. Get Delivery Method From DeliveryMethods Repo
             var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(deliveryMethodId);
 
-            // 5. Create Order
+            // 5.Check that there are no orders with this payment intent exists before.
+            var orderRepo = _unitOfWork.Repository<Order>();
+            var spec = new OrderWithPaymentIntentSpecifications(basket?.PaymentIntentId);
+            var existingOrder = await orderRepo.GetByIdWithSpecAsync(spec);
+
+            if(existingOrder is not null)
+            {
+                orderRepo.Delete(existingOrder);
+                await _paymentService.CreateOrUpdatePaymentIntentAsync(basketId);//To update amount of existing order in case if it's amount still is amount of deleted|previous order.
+            }
+
+            // 6. Create Order
             var order = new Order(
                 buyerEmail: buyerEmail,
                 shippingAddress: shippingAddress,
                 deliveryMethodId: deliveryMethodId,
                 items: orderItems,
-                subTotal: subTotal
+                subTotal: subTotal,
+                paymentIntentId: basket?.PaymentIntentId ?? ""
                 );
 
             //_orderRepo.Add(order);
             _unitOfWork.Repository<Order>().Add(order);
 
-            // 6. Save To Database [TODO]
+            // 7. Save To Database [TODO]
             var result = await _unitOfWork.CompleteAsync();
 
-            //7. Return The Order 
+            // 8. Return The Order 
             if (result <= 0) return null;
             return order;
         }

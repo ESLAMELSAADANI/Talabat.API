@@ -21,19 +21,20 @@ namespace Talabat.Core.Entities.Order_Aggregate
         //[NotMapped]
         //public decimal Total => SubTotal + DeliveryMethod.Cost;//Read Only Attribute
         public decimal GetTotal() => SubTotal + DeliveryMethod?.Cost ?? 0;
-        public string PaymentIntentId { get; set; } = string.Empty;//نية الدفع
+        public string PaymentIntentId { get; set; }
 
         //For EF Core
         private Order()
         {
         }
-        public Order(string buyerEmail, Address shippingAddress, int? deliveryMethodId, ICollection<OrderItem> items, decimal subTotal)
+        public Order(string buyerEmail, Address shippingAddress, int? deliveryMethodId, ICollection<OrderItem> items, decimal subTotal,string paymentIntentId)
         {
             BuyerEmail = buyerEmail;
             ShippingAddress = shippingAddress;
             DeliveryMethodId = deliveryMethodId;
             Items = items;
             SubTotal = subTotal;
+            PaymentIntentId = paymentIntentId;
         }
 
     }
