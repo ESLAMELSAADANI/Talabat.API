@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -67,6 +67,16 @@ namespace Talabat.API
 
             //Add Authentication Services
             builder.Services.AddAuthServices(builder);
+
+            //Register CORS Services with policies [من أي مصدر خارجي  api سياسات التعامل مع بروجكت ال] 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("MyPolicy", policyOptions =>
+                {
+                    policyOptions.AllowAnyHeader().AllowAnyMethod().WithOrigins(builder.Configuration["FrontBaseUrl"]);
+                });
+            }
+                );
 
             #endregion
 
@@ -150,6 +160,10 @@ namespace Talabat.API
             app.UseHttpsRedirection();
 
             app.UseStaticFiles();
+
+            app.UseCors("MyPolicy");
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
