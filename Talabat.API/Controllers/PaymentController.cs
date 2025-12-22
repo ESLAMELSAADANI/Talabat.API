@@ -16,7 +16,7 @@ namespace Talabat.API.Controllers
             _paymentService = paymentService;
         }
 
-        [HttpGet("{basketId}")]// GET : /api/payment/{basketId}
+        [HttpPost("{basketId}")]// POST : /api/payment/{basketId}
         [EndpointSummary("Create or update payment intent")]
         [ProducesResponseType(typeof(CustomerBasket), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
