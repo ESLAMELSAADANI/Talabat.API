@@ -126,7 +126,10 @@ namespace Talabat.API.Controllers
 
             var user = await _userManager.FindUserWithAddressByEmailAsync(User);
 
-            updatedAddress.Id = user.Address.Id;
+            if (user.Address == null)
+                user.Address = updatedAddress;
+            else
+                updatedAddress.Id = user.Address.Id;
 
             user.Address = updatedAddress;
 
