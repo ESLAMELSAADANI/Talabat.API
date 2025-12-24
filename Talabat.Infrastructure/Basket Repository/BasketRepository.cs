@@ -37,7 +37,7 @@ namespace Talabat.Infrastructure.Basket_Repository
         {
             return await _database.KeyDeleteAsync(basketId);
         }
-
+        //No Longer need this method, because the endpoint of CreateOrUpdateBasket() in basket controller take CustomerBasketDTO object that contain prop DeliveryMethodId, so can user select his delivery method.
         public async Task<CustomerBasket?> AttachBasketToDeliveryMethodAsync(string basketId, int deliveryMethodId)
         {
             var redisBasket = await _database.StringGetAsync(basketId);

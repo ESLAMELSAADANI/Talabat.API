@@ -5,8 +5,8 @@ namespace Talabat.API.DTOs
 {
     public class OrderDTO
     {
-        [Required]
-        public string BuyerEmail { get; set; }
+        //[Required]
+        public string? BuyerEmail { get; set; } 
         [Required]
         public string BasketId { get; set; }
         [Range(1, int.MaxValue, ErrorMessage = "DeliveryMethodId is required.")]
