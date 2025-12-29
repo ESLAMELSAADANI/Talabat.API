@@ -51,7 +51,7 @@ namespace Talabat.API
             builder.Services.AddApplicationServices();//Call it as extension method for the contaier builder.services which is of type IServiceCollection
 
             //Add Redis Service To DIC
-            builder.Services.AddScoped<IConnectionMultiplexer>((serviceProvider) =>
+            builder.Services.AddSingleton<IConnectionMultiplexer>((serviceProvider) =>
             {
                 var connection = builder.Configuration.GetConnectionString("Redis");
                 return ConnectionMultiplexer.Connect(connection!);

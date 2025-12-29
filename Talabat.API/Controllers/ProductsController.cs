@@ -27,7 +27,8 @@ namespace Talabat.API.Controllers
         }
 
         //[Authorize]
-        [HttpGet]// Get : /api/products
+        [CachedAttribute(600)]//Action Filter Attribute To Create object from this class/filter in runtime and execute the OnActionExecutionAsync() method before excute the endpoint.
+        [HttpGet]//Routing Filter QAttribute => Get : /api/products
         [EndpointSummary("Get all products")]
         [ProducesResponseType(typeof(IReadOnlyList<ProductToReturnDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]

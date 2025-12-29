@@ -9,7 +9,7 @@ using Talabat.Core.Services.Contract;
 
 namespace Talabat.Application.CacheService
 {
-    public class ResponseCacheService : IResponnseCacheService
+    public class ResponseCacheService : IResponseCacheService
     {
         private readonly IDatabase _database;
 

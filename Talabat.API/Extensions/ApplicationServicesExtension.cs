@@ -7,6 +7,7 @@ using Talabat.API.Errors;
 using Talabat.API.Helpers;
 using Talabat.API.Middlewares;
 using Talabat.Application.AuthService;
+using Talabat.Application.CacheService;
 using Talabat.Application.OrderService;
 using Talabat.Application.PaymentService;
 using Talabat.Application.ProductService;
@@ -25,6 +26,7 @@ namespace Talabat.API.Extensions
         //This Method Add Services To the container DIC that is of type IServiceCollection.
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            services.AddSingleton(typeof(IResponseCacheService), typeof(ResponseCacheService));
             services.AddScoped(typeof(IPaymentService), typeof(PaymentService));
             services.AddScoped(typeof(IProductService), typeof(ProductService));
             services.AddScoped(typeof(IOrderService), typeof(OrderService));
