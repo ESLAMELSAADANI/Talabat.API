@@ -48,6 +48,7 @@ namespace Talabat.API.Controllers
             return Ok(result);
         }
 
+        [CachedAttribute(600)]
         [HttpGet("{id}")]
         [EndpointSummary("Get product by it's id")]
         [ProducesResponseType(typeof(ProductToReturnDTO), StatusCodes.Status200OK)]
@@ -58,6 +59,7 @@ namespace Talabat.API.Controllers
             return result is null ? BadRequest(new ApiResponse(StatusCodes.Status404NotFound)) : Ok(_mapper.Map<ProductToReturnDTO>(result));
         }
 
+        [CachedAttribute(600)]
         [HttpGet("brands")]
         [EndpointSummary("Get all products brands")]
         [ProducesResponseType(typeof(IReadOnlyList<ProductBrand>), StatusCodes.Status200OK)]
@@ -65,6 +67,7 @@ namespace Talabat.API.Controllers
         public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands()
             => Ok(await _productService.GetBrandsAsync());
 
+        [CachedAttribute(600)]
         [HttpGet("brands/{id}")]
         [EndpointSummary("Get product brand by it's id")]
         [ProducesResponseType(typeof(ProductBrand), StatusCodes.Status200OK)]
@@ -75,6 +78,7 @@ namespace Talabat.API.Controllers
             return result is null ? BadRequest(new ApiResponse(StatusCodes.Status404NotFound)) : Ok(result);
         }
 
+        [CachedAttribute(600)]
         [HttpGet("categories")]
         [EndpointSummary("Get all product categories")]
         [ProducesResponseType(typeof(IReadOnlyList<ProductCategory>), StatusCodes.Status200OK)]
@@ -82,6 +86,7 @@ namespace Talabat.API.Controllers
         public async Task<ActionResult<IReadOnlyList<ProductCategory>>> GetProductCategories()
             => Ok(await _productService.GetCategoriesAsync());
 
+        [CachedAttribute(600)]
         [HttpGet("categories/{id}")]
         [EndpointSummary("Get product category by it's id")]
         [ProducesResponseType(typeof(ProductCategory), StatusCodes.Status200OK)]
