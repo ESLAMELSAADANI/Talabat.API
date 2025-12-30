@@ -54,8 +54,15 @@ namespace Talabat.API.Helpers
 
             keyBuilder.Append(request.Path);// /api/products
 
+            //{{url}}/api/products
+            if (request.Query.Count == 0)
+            {
+                keyBuilder.Append("|pageIndex-1|pageSize-5|sort-name");
+                return keyBuilder.ToString();
+            }
             //pageIndex=1&pageSize=5&sort=name
-            foreach (var (key, value) in request.Query)
+            foreach (var (key, value) in request.Query.OrderBy(q => q.Key))//bcz if there are 2 identical requests but different order of query parameters will generate 2 different keys with 2 different caching response
+                                                                           //so i make order by the query parameter key to solve this problem.
             {
                 keyBuilder.Append($"|{key}-{value}");
                 //1st iteration => /api/products|pageIndex-1
