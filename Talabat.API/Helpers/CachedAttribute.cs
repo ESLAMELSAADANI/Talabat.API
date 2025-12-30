@@ -41,7 +41,7 @@ namespace Talabat.API.Helpers
 
             if (executedActionContext.Result is OkObjectResult okObjectResult && okObjectResult.Value is not null)
             {
-                await responseCacheService.CacheResponseAsync(cacheKey, okObjectResult.Value, TimeSpan.FromSeconds(_timeToLiveInSeconds))
+                await responseCacheService.CacheResponseAsync(cacheKey, okObjectResult.Value, TimeSpan.FromSeconds(_timeToLiveInSeconds));
             }
 
         }
